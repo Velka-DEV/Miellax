@@ -19,15 +19,5 @@ namespace Milky.Models
         public bool Rotating { get; set; } = false;
 
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(10);
-
-        /// <summary>
-        /// Whether or not to follow redirections
-        /// </summary>
-        public bool AllowAutoRedirect { get; set; } = true;
-
-        /// <summary>
-        /// Whether or not to use/save/keep cookies, usually not recommended for credential stuffing but who knows
-        /// </summary>
-        public bool UseCookies { get; set; } = false;
     }
 }
