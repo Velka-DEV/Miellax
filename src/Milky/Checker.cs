@@ -289,7 +289,6 @@ namespace Milky
                         break;
                 }
 
-
                 Info.LastHit = DateTime.Now;
             }
         }
