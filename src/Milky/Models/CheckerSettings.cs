@@ -6,7 +6,7 @@
         /// <param name="useProxies">Whether proxies should be used or not</param>
         /// <param name="useCookies">Whether or not to use/save/keep cookies, usually not recommended for credential stuffing but who knows</param>
         /// <param name="AllowAutoRedirect">Whether or not to follow redirections</param>
-        /// /// <param name="MaxAutomaticRedirections">Max automatic request redirections</param>
+        /// <param name="MaxAutomaticRedirections">Max automatic request redirections</param>
         public CheckerSettings(int maxThreads, bool useProxies, bool useCookies = false, bool allowAutoRedirect = true, int maxAutomaticRedirections = 50)
         {
             MaxThreads = maxThreads;

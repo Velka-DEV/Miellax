@@ -55,7 +55,7 @@ namespace Milky
         {
             foreach (var proxy in proxies.Where(p => p.Valid))
             {
-                _httpClientLibrary.Add(proxy.GetHttpClient(useCookies:_checkerSettings.UseCookies, allowAutomaticRedirects:_checkerSettings.AllowAutoRedirect, maximumAutoRedirects:_checkerSettings.MaxAutomaticRedirections));
+                _httpClientLibrary.Add(proxy.GetHttpClient(_checkerSettings));
             }
 
             return this;

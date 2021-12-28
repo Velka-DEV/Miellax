@@ -46,9 +46,9 @@ namespace Milky.Models
 
         internal NetworkCredential Credentials { get; }
 
-        public HttpClient GetHttpClient(CookieContainer cookieContainer = null, bool useCookies = false, bool allowAutomaticRedirects = true, int maximumAutoRedirects = 50)
+        public HttpClient GetHttpClient(CheckerSettings checkerSettings, CookieContainer cookieContainer = null)
         {
-            var httpMessageHandler = GetHttpMessageHandler(cookieContainer, useCookies, allowAutomaticRedirects, maximumAutoRedirects);
+            var httpMessageHandler = GetHttpMessageHandler(checkerSettings, cookieContainer);
 
             var httpClient = new HttpClient(httpMessageHandler)
             {
@@ -63,17 +63,17 @@ namespace Milky.Models
             return httpClient;
         }
 
-        public HttpMessageHandler GetHttpMessageHandler(CookieContainer cookieContainer = null, bool useCookies = false, bool allowAutomaticRedirects = true, int maximumAutoRedirects = 50)
+        public HttpMessageHandler GetHttpMessageHandler(CheckerSettings checkerSettings, CookieContainer cookieContainer = null)
         {
             if (Settings.Protocol == ProxyProtocol.HTTP)
             {
                 return new HttpClientHandler()
                 {
                     Proxy = new WebProxy(Host, Port) { Credentials = Credentials },
-                    AllowAutoRedirect = allowAutomaticRedirects,
-                    UseCookies = useCookies,
+                    AllowAutoRedirect = checkerSettings.AllowAutoRedirect,
+                    UseCookies = checkerSettings.UseCookies,
                     CookieContainer = cookieContainer ?? new CookieContainer(),
-                    MaxAutomaticRedirections = maximumAutoRedirects
+                    MaxAutomaticRedirections = checkerSettings.MaxAutomaticRedirections
                 };
             }
 
@@ -81,7 +81,8 @@ namespace Milky.Models
 
             var proxySettings = new SocksSharp.Proxy.ProxySettings()
             {
-                Host = Host, Port = Port,
+                Host = Host,
+                Port = Port,
                 Credentials = Credentials,
                 ConnectTimeout = timeoutMilliseconds,
                 ReadWriteTimeOut = timeoutMilliseconds
@@ -92,20 +93,20 @@ namespace Milky.Models
             {
                 ProxyProtocol.SOCKS4 => new ProxyClientHandler<Socks4>(proxySettings)
                 {
-                    AllowAutoRedirect = allowAutomaticRedirects,
-                    UseCookies = useCookies,
+                    AllowAutoRedirect = checkerSettings.AllowAutoRedirect,
+                    UseCookies = checkerSettings.UseCookies,
                     CookieContainer = cookieContainer ?? new CookieContainer(),
                 },
                 ProxyProtocol.SOCKS4A => new ProxyClientHandler<Socks4a>(proxySettings)
                 {
-                    AllowAutoRedirect = allowAutomaticRedirects,
-                    UseCookies = useCookies,
+                    AllowAutoRedirect = checkerSettings.AllowAutoRedirect,
+                    UseCookies = checkerSettings.UseCookies,
                     CookieContainer = cookieContainer ?? new CookieContainer(),
                 },
                 ProxyProtocol.SOCKS5 => new ProxyClientHandler<Socks5>(proxySettings)
                 {
-                    AllowAutoRedirect = allowAutomaticRedirects,
-                    UseCookies = useCookies,
+                    AllowAutoRedirect = checkerSettings.AllowAutoRedirect,
+                    UseCookies = checkerSettings.UseCookies,
                     CookieContainer = cookieContainer ?? new CookieContainer(),
                 }
             };

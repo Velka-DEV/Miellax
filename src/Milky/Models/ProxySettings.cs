@@ -1,6 +1,5 @@
 ﻿using Milky.Enums;
 using System;
-using System.Net;
 
 namespace Milky.Models
 {
