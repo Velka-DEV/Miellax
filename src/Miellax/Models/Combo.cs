@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Milky.Models
+namespace Miellax.Models
 {
     public class Combo
     {

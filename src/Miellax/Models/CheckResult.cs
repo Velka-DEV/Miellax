@@ -1,7 +1,7 @@
-﻿using Milky.Enums;
+﻿using Miellax.Enums;
 using System.Collections.Generic;
 
-namespace Milky.Models
+namespace Miellax.Models
 {
     public class CheckResult
     {

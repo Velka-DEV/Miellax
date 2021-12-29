@@ -1,7 +1,7 @@
-﻿using Milky.Enums;
-using Milky.Extensions;
-using Milky.Models;
-using Milky.Utilities;
+﻿using Miellax.Enums;
+using Miellax.Extensions;
+using Miellax.Models;
+using Miellax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Milky
+namespace Miellax
 {
     public class Checker
     {

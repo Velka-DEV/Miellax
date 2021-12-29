@@ -1,6 +1,6 @@
-# Milky [![Latest release](https://img.shields.io/github/v/release/Laiteux/Milky?color=blue&style=flat-square)](https://github.com/Laiteux/Milky/releases) [![License](https://img.shields.io/github/license/Laiteux/Milky?color=blue&style=flat-square)](https://github.com/Laiteux/Milky/blob/v3/LICENSE)
+# Miellax [![Latest release](https://img.shields.io/github/v/release/Laiteux/Miellax?color=blue&style=flat-square)](https://github.com/Laiteux/Miellax/releases) [![License](https://img.shields.io/github/license/Laiteux/Miellax?color=blue&style=flat-square)](https://github.com/Laiteux/Miellax/blob/v3/LICENSE)
 
-Milky is a .NET Standard library for pentesting web apps against credential stuffing attacks.
+Miellax is a .NET Standard library for pentesting web apps against credential stuffing attacks.
 
 In fact, it will manage:
 - HttpClient creation and distribution (support for backconnect proxies and all protocols using [SocksSharp](https://github.com/Laiteux/SocksSharp))
@@ -8,7 +8,7 @@ In fact, it will manage:
 - Console title (hits, free hits, estimated hits, percentages, checked per minute, elapsed/remaining time and more...)
 - Check pause/resume/end functions using hotkeys
 
-And more... See the code itself or the [examples](https://github.com/Laiteux/Milky/blob/v3/examples) folder for a better overview.
+And more... See the code itself or the [examples](https://github.com/Laiteux/Miellax/blob/v3/examples) folder for a better overview.
 
 ## Contribute
 

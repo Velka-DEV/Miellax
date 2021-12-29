@@ -1,10 +1,10 @@
-﻿using Milky.Enums;
+﻿using Miellax.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Milky
+namespace Miellax
 {
     public class ConsoleManager
     {
@@ -21,7 +21,7 @@ namespace Milky
         /// <param name="updateInterval">Interval between title updates</param>
         /// <param name="showFree">Whether you want <see cref="ComboResult.Free"/> to be shown</param>
         /// <param name="showPercentages">Whether you want some cool percentages to be shown</param>
-        /// <param name="prefix">Prefix to add to title, can be useful as something like "Milky Checker v1.0.0 by Laiteux — "</param>
+        /// <param name="prefix">Prefix to add to title, can be useful as something like "Miellax Checker v1.0.0 by Laiteux — "</param>
         /// <param name="suffix">Suffix to add to title, can be useful for uh idk</param>
         public async Task StartUpdatingTitleAsync(TimeSpan updateInterval, bool showFree = true, bool showPercentages = true, string prefix = null, string suffix = null)
         {
@@ -107,14 +107,14 @@ namespace Milky
             {
                 if (!Console.KeyAvailable)
                 {
-                    await Task.Delay(100).ConfigureAwait(false); // I'm not sure if this is the best practice
+                    await Task.Delay(100).ConfigureAwait(false);
 
                     continue;
                 }
 
                 if (_checker.Info.Status == CheckerStatus.Idle)
                 {
-                    continue; // We don't want to do anything if checker is idle
+                    continue;
                 }
 
                 ConsoleKey key = Console.ReadKey(true).Key;

@@ -1,5 +1,5 @@
-using Milky.Enums;
-using Milky.Models;
+using Miellax.Enums;
+using Miellax.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Milky.Examples
+namespace Miellax.Examples
 {
     public static class Program
     {

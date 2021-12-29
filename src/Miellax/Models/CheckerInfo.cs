@@ -1,9 +1,9 @@
-﻿using Milky.Enums;
+﻿using Miellax.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Milky.Models
+namespace Miellax.Models
 {
     public class CheckerInfo
     {

@@ -1,4 +1,4 @@
-﻿namespace Milky.Enums
+﻿namespace Miellax.Enums
 {
     public enum ProxyProtocol
     {

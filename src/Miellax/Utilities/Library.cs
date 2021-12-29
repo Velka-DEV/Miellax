@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Milky.Utilities
+namespace Miellax.Utilities
 {
     // Don't worry about this, I became creative
     internal class Library<T>

@@ -1,4 +1,4 @@
-﻿namespace Milky.Models
+﻿namespace Miellax.Models
 {
     public class CheckerSettings
     {

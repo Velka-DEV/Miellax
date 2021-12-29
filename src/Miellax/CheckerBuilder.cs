@@ -1,5 +1,5 @@
-﻿using Milky.Models;
-using Milky.Utilities;
+﻿using Miellax.Models;
+using Miellax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Milky
+namespace Miellax
 {
     public class CheckerBuilder
     {
@@ -108,13 +108,13 @@ namespace Milky
         {
             if (!_checkerSettings.UseProxies)
             {
-                _httpClientLibrary.Items.Clear(); // Just making sure
+                _httpClientLibrary.Items.Clear();
 
                 _httpClientLibrary.Add(new HttpClient(new HttpClientHandler()
                 {
                     AllowAutoRedirect = _checkerSettings.AllowAutoRedirect,
                     MaxAutomaticRedirections = _checkerSettings.MaxAutomaticRedirections,
-                    UseCookies = _checkerSettings.UseCookies // Using cookies would suck with shared HttpClients, especially for credential stuffing
+                    UseCookies = _checkerSettings.UseCookies
                 }));
             }
             else if (_httpClientLibrary.Items.Count == 0)
@@ -123,7 +123,7 @@ namespace Milky
             }
             else
             {
-                _httpClientLibrary.Fill(_checkerSettings.MaxThreads * 2); // * 2 so we basically always have a different or same HttpClient available to one already in use
+                _httpClientLibrary.Fill(_checkerSettings.MaxThreads * 2);
             }
 
             foreach (var header in _defaultRequestHeaders)

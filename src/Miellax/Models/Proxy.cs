@@ -1,10 +1,10 @@
-﻿using Milky.Enums;
+﻿using Miellax.Enums;
 using SocksSharp;
 using SocksSharp.Proxy;
 using System.Net;
 using System.Net.Http;
 
-namespace Milky.Models
+namespace Miellax.Models
 {
     public class Proxy
     {
