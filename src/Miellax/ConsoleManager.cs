@@ -46,7 +46,7 @@ namespace Miellax
                     {
                         if (_checker.Info.Status != CheckerStatus.Done)
                         {
-                            checkStats[0] += $" ({(double)_checker.Info.Checked.Count / _checker.Info.Combos:P2})";
+                            checkStats[0] += $" ({(double)_checker.Info.Checked.Count / _checker.Info.Credentials:P2})";
                         }
 
                         checkStats[1] += $" ({(double)_checker.Info.Hits / _checker.Info.Checked.Count:P2})";
@@ -64,7 +64,7 @@ namespace Miellax
 
                     if (_checker.Info.Status != CheckerStatus.Done)
                     {
-                        checkStats.Insert(1, "Left: " + ((double)(_checker.Info.Combos - _checker.Info.Checked.Count)).ToString("N0"));
+                        checkStats.Insert(1, "Left: " + ((double)(_checker.Info.Credentials - _checker.Info.Checked.Count)).ToString("N0"));
 
                         if (_checker.Info.Hits != 0)
                         {

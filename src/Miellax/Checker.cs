@@ -18,19 +18,25 @@ namespace Miellax
 
         private readonly CheckerSettings _checkerSettings;
         private readonly OutputSettings _outputSettings;
-        private readonly Func<Combo, HttpClient, int, Task<CheckResult>> _checkProcess;
-        private readonly List<Combo> _combos;
+        private readonly Func<ICredential, HttpClient, int, Task<CheckResult>> _checkProcess;
+        private readonly Action<ICredential, CheckResult> _outputProcess;
+        private readonly List<ICredential> _credentials;
         private readonly Library<HttpClient> _httpClientLibrary;
 
-        internal Checker(CheckerSettings checkerSettings, OutputSettings outputSettings, Func<Combo, HttpClient, int, Task<CheckResult>> checkProcess, List<Combo> combos, Library<HttpClient> httpClientLibrary)
+        public static Checker CheckerInstance { get; private set; }
+
+        internal Checker(CheckerSettings checkerSettings, OutputSettings outputSettings, Func<ICredential, HttpClient, int, Task<CheckResult>> checkProcess, Action<ICredential, CheckResult> outputProcess, List<ICredential> credentials, Library<HttpClient> httpClientLibrary)
         {
-            Info = new CheckerInfo(combos.Count);
+            Info = new CheckerInfo(credentials.Count);
 
             _checkerSettings = checkerSettings;
             _outputSettings = outputSettings;
+            _outputProcess = outputProcess;
             _checkProcess = checkProcess;
-            _combos = combos;
+            _credentials = credentials;
             _httpClientLibrary = httpClientLibrary;
+
+            CheckerInstance = this;
         }
 
         public async Task StartAsync()
@@ -45,7 +51,7 @@ namespace Miellax
             Info.Start = DateTime.Now;
             Info.Status = CheckerStatus.Running;
 
-            await _combos.ForEachAsync(_checkerSettings.MaxThreads, async combo =>
+            await _credentials.ForEachAsync(_checkerSettings.MaxThreads, async credential =>
             {
                 Info.CancellationTokenSource.Token.ThrowIfCancellationRequested();
 
@@ -70,7 +76,7 @@ namespace Miellax
                         httpClient = _httpClientLibrary.Items[0];
                     }
 
-                    checkResult = await _checkProcess(combo, httpClient.Value, attempts).ConfigureAwait(false);
+                    checkResult = await _checkProcess(credential, httpClient.Value, attempts).ConfigureAwait(false);
 
                     _httpClientLibrary.Return(httpClient);
 
@@ -92,11 +98,11 @@ namespace Miellax
                     break;
                 }
 
-                OutputCombo(combo, checkResult);
+                _outputProcess(credential, checkResult);
 
                 lock (Info.Locker)
                 {
-                    Info.Checked.Add(combo);
+                    Info.Checked.Add(credential);
 
                     if (checkResult.ComboResult == ComboResult.Hit)
                     {
@@ -179,7 +185,7 @@ namespace Miellax
 
                 string outputPath = Path.Combine(_outputSettings.OutputDirectory ?? string.Empty, "Unchecked.txt");
 
-                List<Combo> @unchecked = _combos.Except(Info.Checked).ToList();
+                List<ICredential> @unchecked = _credentials.Except(Info.Checked).ToList();
 
                 File.WriteAllLines(outputPath, @unchecked.Select(c => c.ToString()));
 
@@ -201,9 +207,9 @@ namespace Miellax
             }
         }
 
-        private void OutputCombo(Combo combo, CheckResult checkResult)
+        public static void OutputProcess(ICredential combo, CheckResult checkResult)
         {
-            if ((checkResult.ComboResult == ComboResult.Invalid && !_outputSettings.OutputInvalids) || checkResult.ComboResult == ComboResult.Banned)
+            if ((checkResult.ComboResult == ComboResult.Invalid && !CheckerInstance._outputSettings.OutputInvalids) || checkResult.ComboResult == ComboResult.Banned)
             {
                 return;
             }
@@ -216,24 +222,24 @@ namespace Miellax
                     .Where(c => !string.IsNullOrWhiteSpace(c.Value?.ToString())) // If capture value is either null, empty or white-space, we don't want it to be included
                     .Select(c => $"{c.Key} = {c.Value}");
 
-                outputBuilder.Append(_outputSettings.CaptureSeparator).AppendJoin(_outputSettings.CaptureSeparator, captures);
+                outputBuilder.Append(CheckerInstance._outputSettings.CaptureSeparator).AppendJoin(CheckerInstance._outputSettings.CaptureSeparator, captures);
             }
 
             var outputString = outputBuilder.ToString();
 
-            lock (Info.Locker)
+            lock (CheckerInstance.Info.Locker)
             {
                 foreach (string outputFile in checkResult.OutputFiles ?? new[] { checkResult.ComboResult.ToString() })
                 {
-                    string outputPath = Path.Combine(_outputSettings.OutputDirectory ?? string.Empty, outputFile + ".txt");
+                    string outputPath = Path.Combine(CheckerInstance._outputSettings.OutputDirectory ?? string.Empty, outputFile + ".txt");
 
                     Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
 
                     File.AppendAllText(outputPath, outputString + Environment.NewLine);
 
-                    if (_outputSettings.GlobalOutput)
+                    if (CheckerInstance._outputSettings.GlobalOutput)
                     {
-                        string globalOutputPath = Path.Combine(Path.Combine(_outputSettings.OutputDirectory == null ? "Results" : Directory.GetParent(_outputSettings.OutputDirectory).FullName, "Global"), outputFile + ".txt");
+                        string globalOutputPath = Path.Combine(Path.Combine(CheckerInstance._outputSettings.OutputDirectory == null ? "Results" : Directory.GetParent(CheckerInstance._outputSettings.OutputDirectory).FullName, "Global"), outputFile + ".txt");
 
                         Directory.CreateDirectory(Path.GetDirectoryName(globalOutputPath));
 
@@ -243,16 +249,16 @@ namespace Miellax
 
                 Console.ForegroundColor = checkResult.ComboResult switch
                 {
-                    ComboResult.Hit => _outputSettings.HitColor,
-                    ComboResult.Free => _outputSettings.FreeColor,
-                    ComboResult.Invalid => _outputSettings.InvalidColor,
-                    ComboResult.Banned => _outputSettings.BannedColor,
-                    ComboResult.Unknown => _outputSettings.UnknownColor
+                    ComboResult.Hit => CheckerInstance._outputSettings.HitColor,
+                    ComboResult.Free => CheckerInstance._outputSettings.FreeColor,
+                    ComboResult.Invalid => CheckerInstance._outputSettings.InvalidColor,
+                    ComboResult.Banned => CheckerInstance._outputSettings.BannedColor,
+                    ComboResult.Unknown => CheckerInstance._outputSettings.UnknownColor
                 };
 
-                if (_outputSettings.CustomColors.Count > 0 && checkResult.Captures != null)
+                if (CheckerInstance._outputSettings.CustomColors.Count > 0 && checkResult.Captures != null)
                 {
-                    foreach (var customColor in _outputSettings.CustomColors)
+                    foreach (var customColor in CheckerInstance._outputSettings.CustomColors)
                     {
                         if (checkResult.Captures.TryGetValue(customColor.Value.Key, out var capturedObject))
                         {
@@ -268,19 +274,19 @@ namespace Miellax
                 switch (checkResult.ComboResult)
                 {
                     case ComboResult.Free:
-                        if (_outputSettings.DisplayFrees)
+                        if (CheckerInstance._outputSettings.DisplayFrees)
                             Console.WriteLine(outputString);
                         break;
                     case ComboResult.Unknown:
-                        if (_outputSettings.DisplayUnknowns)
+                        if (CheckerInstance._outputSettings.DisplayUnknowns)
                             Console.WriteLine(outputString);
                         break;
                     case ComboResult.Banned:
-                        if (_outputSettings.DisplayBanneds)
+                        if (CheckerInstance._outputSettings.DisplayBanneds)
                             Console.WriteLine(outputString);
                         break;
                     case ComboResult.Invalid:
-                        if (_outputSettings.OutputInvalids)
+                        if (CheckerInstance._outputSettings.OutputInvalids)
                             Console.WriteLine(outputString);
                         break;
                     case ComboResult.Hit:
@@ -289,7 +295,7 @@ namespace Miellax
                         break;
                 }
 
-                Info.LastHit = DateTime.Now;
+                CheckerInstance.Info.LastHit = DateTime.Now;
             }
         }
     }

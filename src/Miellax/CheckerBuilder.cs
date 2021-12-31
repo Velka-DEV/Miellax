@@ -1,4 +1,6 @@
-﻿using Miellax.Models;
+﻿using Miellax.Enums;
+using Miellax.Exceptions;
+using Miellax.Models;
 using Miellax.Utilities;
 using System;
 using System.Collections.Generic;
@@ -14,14 +16,15 @@ namespace Miellax
     public class CheckerBuilder
     {
         private readonly CheckerSettings _checkerSettings;
-        private readonly Func<Combo, HttpClient, int, Task<CheckResult>> _checkProcess;
+        private readonly Func<ICredential, HttpClient, int, Task<CheckResult>> _checkProcess;
+        private Action<ICredential, CheckResult> _outputProcess = Checker.OutputProcess;
         private OutputSettings _outputSettings = new OutputSettings();
-        private readonly List<Combo> _combos = new List<Combo>();
+        private readonly List<ICredential> _combos = new List<ICredential>();
         private readonly Library<HttpClient> _httpClientLibrary = new Library<HttpClient>();
         private readonly Lazy<WebClient> _lazyWebClient = new Lazy<WebClient>();
         private readonly Dictionary<string, string> _defaultRequestHeaders = new Dictionary<string, string>();
 
-        public CheckerBuilder(CheckerSettings checkerSettings, Func<Combo, HttpClient, int, Task<CheckResult>> checkProcess)
+        public CheckerBuilder(CheckerSettings checkerSettings, Func<ICredential, HttpClient, int, Task<CheckResult>> checkProcess)
         {
             _checkerSettings = checkerSettings;
             _checkProcess = checkProcess;
@@ -34,28 +37,68 @@ namespace Miellax
             return this;
         }
 
-        public CheckerBuilder WithCombos(IEnumerable<Combo> combos)
+        public CheckerBuilder WithOutputProcess(Action<ICredential, CheckResult> outputProcess)
         {
-            foreach (var combo in combos.Where(c => c.Valid))
+            _outputProcess = outputProcess;
+
+            return this;
+        }
+
+        public CheckerBuilder WithComboCredentials(IEnumerable<string> combos)
+        {
+            foreach (var combo in combos)
             {
-                _combos.Add(combo);
+                try
+                {
+                    _combos.Add(new ComboCredential(combo));
+                }
+                catch (InvalidComboException) { }
             }
 
             return this;
         }
 
-        public CheckerBuilder WithCombos(IEnumerable<string> combos, string separator = ":")
+        public CheckerBuilder WithCodeCredentials(IEnumerable<string> codes)
         {
-            WithCombos(combos.Select(c => new Combo(c, separator)));
+            foreach (var code in codes)
+            {
+                try
+                {
+                    _combos.Add(new CodeCredential(code));
+                }
+                catch (InvalidCodeException) { }
+            }
 
             return this;
         }
 
-        public CheckerBuilder WithProxies(IEnumerable<Proxy> proxies)
+        public CheckerBuilder WithUrlCredentials(IEnumerable<string> urls)
         {
-            foreach (var proxy in proxies.Where(p => p.Valid))
+            foreach (var url in urls)
             {
-                _httpClientLibrary.Add(proxy.GetHttpClient(_checkerSettings));
+                try
+                {
+                    _combos.Add(new UrlCredential(url));
+                }
+                catch (InvalidComboException) { }
+            }
+
+            return this;
+        }
+
+        public CheckerBuilder WithCredentials(IEnumerable<string> credentials, CredentialType credentialType, string separator = ":")
+        {
+            switch (credentialType)
+            {
+                case CredentialType.Combo:
+                    WithComboCredentials(credentials);
+                    break;
+                case CredentialType.Code:
+                    WithCodeCredentials(credentials);
+                    break;
+                case CredentialType.Url:
+                    WithUrlCredentials(credentials);
+                    break;
             }
 
             return this;
@@ -63,7 +106,14 @@ namespace Miellax
 
         public CheckerBuilder WithProxies(IEnumerable<string> proxies, ProxySettings settings)
         {
-            WithProxies(proxies.Select(p => new Proxy(p, settings)));
+            foreach (var proxy in proxies)
+            {
+                try
+                {
+                    _httpClientLibrary.Add(HttpClientBuilder.GetHttpClient(_checkerSettings, new Proxy(proxy, settings)));
+                }
+                catch (InvalidProxyException) { }
+            }
 
             return this;
         }
@@ -101,7 +151,7 @@ namespace Miellax
             SetUpHttpClientLibrary();
             SetUpMiscellaneous();
 
-            return new Checker(_checkerSettings, _outputSettings, _checkProcess, _combos, _httpClientLibrary);
+            return new Checker(_checkerSettings, _outputSettings, _checkProcess, _outputProcess, _combos, _httpClientLibrary);
         }
 
         private void SetUpHttpClientLibrary()
@@ -138,7 +188,6 @@ namespace Miellax
         private void SetUpMiscellaneous(int extraThreads = 10)
         {
             ThreadPool.SetMinThreads(_checkerSettings.MaxThreads + extraThreads, _checkerSettings.MaxThreads + extraThreads);
-
             Directory.CreateDirectory(_outputSettings.OutputDirectory);
         }
     }

@@ -7,9 +7,9 @@ namespace Miellax.Models
 {
     public class CheckerInfo
     {
-        internal CheckerInfo(int combos)
+        internal CheckerInfo(int credentials)
         {
-            Combos = combos;
+            Credentials = credentials;
         }
 
         internal object Locker { get; } = new object();
@@ -18,9 +18,9 @@ namespace Miellax.Models
 
         public CheckerStatus Status { get; internal set; }
 
-        public int Combos { get; }
+        public int Credentials { get; }
 
-        public List<Combo> Checked { get; } = new List<Combo>();
+        public List<ICredential> Checked { get; } = new List<ICredential>();
 
         public int Cpm { get; internal set; }
 
@@ -39,7 +39,7 @@ namespace Miellax.Models
                     return 0;
                 }
 
-                return (int)((double)Combos / Checked.Count * Hits);
+                return (int)((double)Credentials / Checked.Count * Hits);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Miellax.Models
             {
                 try
                 {
-                    return TimeSpan.FromSeconds((Combos - Checked.Count) / (Cpm / 60));
+                    return TimeSpan.FromSeconds((Credentials - Checked.Count) / (Cpm / 60));
                 }
                 catch
                 {
