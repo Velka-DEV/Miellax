@@ -209,7 +209,7 @@ namespace Miellax
 
         public static void OutputProcess(ICredential combo, CheckResult checkResult)
         {
-            if ((checkResult.ComboResult == ComboResult.Invalid && !CheckerInstance._outputSettings.OutputInvalids) || checkResult.ComboResult == ComboResult.Banned)
+            if ((checkResult.ComboResult == ComboResult.Invalid && !CheckerInstance._outputSettings.OutputInvalids) || (checkResult.ComboResult == ComboResult.Locked && !CheckerInstance._outputSettings.OutputLockeds))
             {
                 return;
             }
@@ -252,7 +252,7 @@ namespace Miellax
                     ComboResult.Hit => CheckerInstance._outputSettings.HitColor,
                     ComboResult.Free => CheckerInstance._outputSettings.FreeColor,
                     ComboResult.Invalid => CheckerInstance._outputSettings.InvalidColor,
-                    ComboResult.Banned => CheckerInstance._outputSettings.BannedColor,
+                    ComboResult.Locked => CheckerInstance._outputSettings.BannedColor,
                     ComboResult.Unknown => CheckerInstance._outputSettings.UnknownColor
                 };
 
@@ -278,11 +278,11 @@ namespace Miellax
                             Console.WriteLine(outputString);
                         break;
                     case ComboResult.Unknown:
-                        if (CheckerInstance._outputSettings.DisplayUnknowns)
+                        if (CheckerInstance._outputSettings.OutputUnknowns)
                             Console.WriteLine(outputString);
                         break;
-                    case ComboResult.Banned:
-                        if (CheckerInstance._outputSettings.DisplayBanneds)
+                    case ComboResult.Locked:
+                        if (CheckerInstance._outputSettings.OutputLockeds)
                             Console.WriteLine(outputString);
                         break;
                     case ComboResult.Invalid:

@@ -6,7 +6,7 @@
         Invalid,
         Free,
         Hit,
-        Banned,
+        Locked,
         Unknown
     }
 }

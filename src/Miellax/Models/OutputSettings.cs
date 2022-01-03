@@ -20,19 +20,19 @@ namespace Miellax.Models
         public bool OutputInvalids { get; set; } = false;
 
         /// <summary>
-        /// Whether to display free's in console
-        /// </summary>
-        public bool DisplayFrees { get; set; } = true;
-
-        /// <summary>
         /// Whether to display unknown's in console
         /// </summary>
-        public bool DisplayUnknowns { get; set; } = false;
+        public bool OutputUnknowns { get; set; } = false;
 
         /// <summary>
         /// Whether to display banned's in console
         /// </summary>
-        public bool DisplayBanneds { get; set; } = false;
+        public bool OutputLockeds { get; set; } = false;
+
+        /// <summary>
+        /// Whether to display free's in console
+        /// </summary>
+        public bool DisplayFrees { get; set; } = true;
 
         /// <summary>
         /// Separator that's going to be used to separate the combo and the capture, as well as each capture
