@@ -15,6 +15,8 @@ namespace Miellax
 {
     public class CheckerBuilder
     {
+
+
         private readonly CheckerSettings _checkerSettings;
         private readonly Func<ICredential, HttpClient, int, Task<CheckResult>> _checkProcess;
         private Action<ICredential, CheckResult> _outputProcess = Checker.OutputProcess;
@@ -91,14 +93,11 @@ namespace Miellax
             switch (credentialType)
             {
                 case CredentialType.Combo:
-                    WithComboCredentials(credentials);
-                    break;
+                    return WithComboCredentials(credentials);
                 case CredentialType.Code:
-                    WithCodeCredentials(credentials);
-                    break;
+                    return WithCodeCredentials(credentials);
                 case CredentialType.Url:
-                    WithUrlCredentials(credentials);
-                    break;
+                    return WithUrlCredentials(credentials);
             }
 
             return this;
