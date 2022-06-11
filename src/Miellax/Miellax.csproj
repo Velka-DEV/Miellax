@@ -8,7 +8,7 @@
     <Title>Miellax: Enhanced Milky</Title>
     <Description>Miellax is an evolved version of the credentials stuffing library named Milky.</Description>
     <RepositoryUrl>https://github.com/Velka-DEV/Miellax</RepositoryUrl>
-    <PackageVersion>1.1.0</PackageVersion>
+    <PackageVersion>1.1.1</PackageVersion>
   </PropertyGroup>
 
 </Project>

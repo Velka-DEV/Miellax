@@ -71,6 +71,11 @@ namespace Miellax
                             checkStats.Insert(3, "Estimated: " + _checker.Info.EstimatedHits.ToString("N0"));
                         }
 
+                        if (_checker.Info.Retries != 0)
+                        {
+                            checkStats.Insert(3, "Retries: " + _checker.Info.Retries.ToString("N0"));
+                        }
+
                         if (_checker.Info.Status != CheckerStatus.Paused)
                         {
                             runStats.Insert(0, "CPM: " + ((double)_checker.Info.Cpm).ToString("N0"));
