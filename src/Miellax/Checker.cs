@@ -83,6 +83,9 @@ namespace Miellax
                     if (checkResult.IncrementAttempts)
                     {
                         attempts++;
+
+                        if (attempts > _checkerSettings.MaxAttempts)
+                            break;
                     }
 
                     if (checkResult.ComboResult == ComboResult.Retry)
@@ -214,7 +217,7 @@ namespace Miellax
                 return;
             }
 
-            var outputBuilder = new StringBuilder(combo.ToString());
+            var outputBuilder = new StringBuilder(combo.Raw);
 
             if (checkResult.Captures != null && checkResult.Captures.Count != 0)
             {
