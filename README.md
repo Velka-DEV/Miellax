@@ -18,7 +18,7 @@ However, please make sure to follow the current code base/style.
 
 ## Contact
 
-Telegram: @velkaDEV
+Telegram: @modest
 
 ## Donate
 
