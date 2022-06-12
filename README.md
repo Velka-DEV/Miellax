@@ -1,4 +1,4 @@
-# Miellax: Enhanced Milky ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Velka-DEV/Miellax/.NET)[![Latest release](https://img.shields.io/github/v/release/Laiteux/Miellax?color=blue&style=flat-square)](https://github.com/Laiteux/Miellax/releases) [![License](https://img.shields.io/github/license/Laiteux/Miellax?color=blue&style=flat-square)](https://github.com/Laiteux/Miellax/blob/v3/LICENSE)
+# Miellax: Enhanced Milky ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Velka-DEV/Miellax/.NET) [![Latest release](https://img.shields.io/github/v/release/Laiteux/Miellax?color=blue&style=flat-square)](https://github.com/Laiteux/Miellax/releases) [![License](https://img.shields.io/github/license/Laiteux/Miellax?color=blue&style=flat-square)](https://github.com/Velka-DEV/Miellax/blob/v3/LICENSE.md)
 
 Miellax is a .NET 6 library for pentesting web apps against credential stuffing attacks based on the Milky library written by Laiteux.
 
